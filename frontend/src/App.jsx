@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 
-const API_URL = 'https://asian-maritime-met-issue.trycloudflare.com/api/expenses';
+const API_URL = 'https://alternate-nest-sensors-commercial.trycloudflare.com/api/expenses';
 
 function App() {
   const [expenses, setExpenses] = useState([])
