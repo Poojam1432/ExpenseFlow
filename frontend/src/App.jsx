@@ -1,8 +1,21 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 
-const API_URL = 'https://alternate-nest-sensors-commercial.trycloudflare.com/api/expenses'
 const PROFILE_KEY = 'expenseflow-demo-profile'
+const EXPENSES_KEY_PREFIX = 'expenseflow-demo-expenses:'
+
+function expensesKey(email) {
+  return `${EXPENSES_KEY_PREFIX}${String(email || '').trim().toLowerCase()}`
+}
+
+function readUserExpenses(email) {
+  try { return JSON.parse(localStorage.getItem(expensesKey(email)) || '[]') }
+  catch { return [] }
+}
+
+function writeUserExpenses(email, items) {
+  localStorage.setItem(expensesKey(email), JSON.stringify(items))
+}
 
 function App() {
   const [expenses, setExpenses] = useState([])
@@ -23,20 +36,13 @@ function App() {
   const [editEmail, setEditEmail] = useState('')
   const [activeNav, setActiveNav] = useState('Dashboard')
 
-  async function fetchExpenses() {
-    try {
-      const response = await fetch(API_URL)
-      if (!response.ok) throw new Error('Failed to fetch expenses')
-      setExpenses(await response.json())
-    } catch (error) {
-      console.error(error)
-      alert('Cannot connect to backend. Check whether server is running.')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => { if (profile) fetchExpenses() }, [profile])
+  // Demo-only account separation: each email gets its own expenses in this browser.
+  // No shared backend expense endpoint is called from this frontend.
+  useEffect(() => {
+    if (profile?.email) setExpenses(readUserExpenses(profile.email))
+    else setExpenses([])
+    setLoading(false)
+  }, [profile?.email])
 
   function saveProfile(nextProfile) {
     localStorage.setItem(PROFILE_KEY, JSON.stringify(nextProfile))
@@ -85,31 +91,29 @@ function App() {
 
   const total = expenses.reduce((sum, expense) => sum + Number(expense.amount), 0)
 
-  async function addExpense(e) {
+  function addExpense(e) {
     e.preventDefault()
     if (!title.trim() || !amount || Number(amount) <= 0) {
       alert('Please enter valid expense details')
       return
     }
-    try {
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: title.trim(), category, amount: Number(amount) })
-      })
-      if (!response.ok) throw new Error('Could not add expense')
-      setTitle('')
-      setAmount('')
-      await fetchExpenses()
-    } catch (error) { alert(error.message) }
+    const nextExpenses = [{
+      id: `local-${Date.now()}`,
+      title: title.trim(),
+      category,
+      amount: Number(amount),
+      date: new Date().toISOString().slice(0, 10),
+    }, ...expenses]
+    writeUserExpenses(profile.email, nextExpenses)
+    setExpenses(nextExpenses)
+    setTitle('')
+    setAmount('')
   }
 
-  async function deleteExpense(id) {
-    try {
-      const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' })
-      if (!response.ok) throw new Error('Could not delete expense')
-      await fetchExpenses()
-    } catch (error) { alert(error.message) }
+  function deleteExpense(id) {
+    const nextExpenses = expenses.filter(expense => expense.id !== id)
+    writeUserExpenses(profile.email, nextExpenses)
+    setExpenses(nextExpenses)
   }
 
   if (!profile) {
@@ -155,7 +159,7 @@ function App() {
               {authMode === 'login' ? "Don't have an account?" : 'Already have an account?'}
               <button onClick={() => setAuthMode(authMode === 'login' ? 'signup' : 'login')}>{authMode === 'login' ? 'Create account' : 'Sign in'}</button>
             </p>
-            <p className="demo-note">Demo interface · Account details are saved only in this browser.</p>
+            <p className="demo-note">Demo mode · Each email has separate expenses saved only in this browser.</p>
           </div>
         </div>
       </div>
