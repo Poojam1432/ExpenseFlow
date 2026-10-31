@@ -1,9 +1,9 @@
-# 💰 Mini Smart Expense Tracker – ExpenseFlow
+#  Mini Smart Expense Tracker – ExpenseFlow
 
-## 📌 Project Overview
+##  Project Overview
 ExpenseFlow is a web-based application designed to help users record, manage, and monitor their daily expenses through a simple and user-friendly interface.
 
-## ✨ Features
+##  Features
 - User Login and Signup Interface
 - Expense Dashboard
 - Add and Delete Expenses
@@ -13,7 +13,7 @@ ExpenseFlow is a web-based application designed to help users record, manage, an
 - Average Expense Calculation
 - Separate demo expense records for different user profiles
 
-## 🛠️ Technologies Used
+##  Technologies Used
 
 ### Frontend
 - React.js
@@ -37,7 +37,7 @@ ExpenseFlow is a web-based application designed to help users record, manage, an
 - Amazon Linux 2023 – Operating system used on EC2.
 - Amazon S3 – CSV report upload functionality was tested separately.
 
-## ☁️ AWS Deployment
+##  AWS Deployment
 - Frontend deployed using AWS Amplify.
 - Backend deployed on an AWS EC2 instance.
 - Node.js application managed using PM2.
@@ -45,7 +45,7 @@ ExpenseFlow is a web-based application designed to help users record, manage, an
 - IAM role configured for EC2 access to S3.
 - S3 CSV upload tested successfully.
 
-## 📂 Project Structure
+##  Project Structure
 
 ```text
 ExpenseFlow/
@@ -67,7 +67,7 @@ ExpenseFlow/
 └── README.md
 ```
 
-## 🚀 Installation and Setup
+##  Installation and Setup
 
 ### 1. Clone the Repository
 
@@ -93,20 +93,20 @@ node server.js
 
 Configure the required environment variables before starting the backend.
 
-## 🔐 Security
+##  Security
 - Environment variables are used for sensitive database configuration.
 - AWS IAM roles provide permissions for AWS resource access.
 - EC2 Security Groups control network traffic.
 
-## 🧪 Testing
+##  Testing
 - Tested frontend functionality.
 - Verified backend API response.
 - Checked PostgreSQL service status.
 - Verified backend process using PM2.
 - Tested CSV report uploads to Amazon S3.
 
-## 👥 Team Project
+##  Team Project
 Developed as an academic project to demonstrate frontend development, backend development, database management, and AWS cloud deployment.
 
-## 🎯 Conclusion
+##  Conclusion
 ExpenseFlow provides a simple and organised way to manage everyday expenses. The project helped us gain practical experience in web application development and cloud deployment.
